@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }) => {
                 socket.disconnect();
             }
 
-            socketInstance = io('http://localhost:5000', {
+            socketInstance = io(process.env.REACT_APP_SOCKET_URL || 'http://localhost:5000', {
                 transports: ['websocket', 'polling'],
                 reconnection: true,
                 reconnectionAttempts: 5,
