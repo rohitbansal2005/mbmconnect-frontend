@@ -11,6 +11,7 @@ import {
 } from '@mui/material';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import config from '../config';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
@@ -22,7 +23,7 @@ const AdminLogin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/admin/login', {
+      const response = await axios.post(`${config.backendUrl}/api/auth/admin/login`, {
         email,
         password
       });

@@ -23,6 +23,7 @@ import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import AddIcon from '@mui/icons-material/Add';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import config from '../config';
 
 const Updates = () => {
   const [updates, setUpdates] = useState([]);
@@ -74,7 +75,7 @@ const Updates = () => {
       }
       
       console.log('Checking admin status...');
-      const res = await axios.get('http://localhost:5000/api/users/me', {
+      const res = await axios.get(`${config.backendUrl}/api/users/me`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       console.log('Admin status response:', res.data);
@@ -87,7 +88,7 @@ const Updates = () => {
   const fetchUpdates = async () => {
     try {
       console.log('Fetching updates...');
-      const res = await axios.get('http://localhost:5000/api/events');
+      const res = await axios.get(`${config.backendUrl}/api/events`);
       console.log('Updates response:', res.data);
       setUpdates(res.data);
       setLoading(false);
@@ -107,7 +108,7 @@ const Updates = () => {
       }
 
       console.log('Creating new update:', newUpdate);
-      await axios.post('http://localhost:5000/api/events', newUpdate, {
+      await axios.post(`${config.backendUrl}/api/events`, newUpdate, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -128,7 +129,7 @@ const Updates = () => {
         return;
       }
       console.log('Reacting to update:', updateId, reactionType);
-      await axios.post(`http://localhost:5000/api/events/${updateId}/react`, 
+      await axios.post(`${config.backendUrl}/api/events/${updateId}/react`, 
         { reactionType },
         { headers: { Authorization: `Bearer ${token}` } }
       );

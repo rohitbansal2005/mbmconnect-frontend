@@ -6,6 +6,7 @@ import { getProfileImageUrl, fallbackImage } from '../utils/imageUtils';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import IconButton from '@mui/material/IconButton';
 import FollowButton from '../components/FollowButton';
+import config from '../config';
 
 function useQuery() {
   return new URLSearchParams(useLocation().search);
@@ -20,7 +21,7 @@ const SearchPage = () => {
   useEffect(() => {
     if (query.length < 2) return;
     setLoading(true);
-    axios.get(`http://localhost:5000/api/users/search?query=${encodeURIComponent(query)}`, {
+    axios.get(`${config.backendUrl}/api/users/search?query=${encodeURIComponent(query)}`, {
       headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
     })
       .then(res => setResults(res.data))

@@ -23,6 +23,7 @@ import axios from 'axios';
 import MuiAlert from '@mui/material/Alert';
 import FocusedPostModal from '../components/FocusedPostModal';
 import { useLocation, useMatch } from 'react-router-dom';
+import config from '../config';
 
 const Home = () => {
   const theme = useTheme();
@@ -47,7 +48,7 @@ const Home = () => {
     const fetchUsers = async () => {
       try {
         console.log('Attempting to fetch users...');
-        const response = await axios.get('http://localhost:5000/api/users', {
+        const response = await axios.get(`${config.backendUrl}/api/users`, {
           headers: {
             'Authorization': `Bearer ${user.token}`
           }
@@ -83,7 +84,7 @@ const Home = () => {
       try {
         const token = localStorage.getItem('token');
         if (!token) return;
-        const response = await axios.get('http://localhost:5000/api/posts/saved', {
+        const response = await axios.get(`${config.backendUrl}/api/posts/saved`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setSavedPosts(response.data.map(post => post._id));
@@ -96,7 +97,7 @@ const Home = () => {
 
   const fetchPosts = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/posts');
+      const res = await axios.get(`${config.backendUrl}/api/posts`);
       setPosts(res.data);
       setLoading(false);
     } catch (error) {
@@ -115,7 +116,7 @@ const Home = () => {
       }
 
       console.log('Creating post with data:', postData);
-      const response = await axios.post('http://localhost:5000/api/posts', postData, {
+      const response = await axios.post(`${config.backendUrl}/api/posts`, postData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',
@@ -154,7 +155,7 @@ const Home = () => {
         return;
       }
 
-      await axios.delete(`http://localhost:5000/api/posts/${postId}`, {
+      await axios.delete(`${config.backendUrl}/api/posts/${postId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -175,7 +176,7 @@ const Home = () => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.put(
-        `http://localhost:5000/api/posts/${editingPost._id}`,
+        `${config.backendUrl}/api/posts/${editingPost._id}`,
         { content: editContent },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -203,10 +204,10 @@ const Home = () => {
       const token = localStorage.getItem('token');
       if (!token) return;
       if (savedPosts.includes(postId)) {
-        await axios.post(`http://localhost:5000/api/posts/${postId}/unsave`, {}, { headers: { Authorization: `Bearer ${token}` } });
+        await axios.post(`${config.backendUrl}/api/posts/${postId}/unsave`, {}, { headers: { Authorization: `Bearer ${token}` } });
         setSavedPosts(prev => prev.filter(id => id !== postId));
       } else {
-        await axios.post(`http://localhost:5000/api/posts/${postId}/save`, {}, { headers: { Authorization: `Bearer ${token}` } });
+        await axios.post(`${config.backendUrl}/api/posts/${postId}/save`, {}, { headers: { Authorization: `Bearer ${token}` } });
         setSavedPosts(prev => [...prev, postId]);
       }
     } catch (error) {

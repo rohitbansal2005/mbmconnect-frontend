@@ -76,6 +76,7 @@ import CreatePost from '../components/CreatePost';
 import { getProfileImageUrl, fallbackImage } from '../utils/imageUtils';
 import PageLayout from '../components/PageLayout';
 import UserProfile from '../components/UserProfile';
+import config from '../config';
 
 const Profile = () => {
   const { user, token, setUser } = useAuth();
@@ -165,10 +166,10 @@ const Profile = () => {
         throw new Error('No valid profile ID available');
       }
 
-      console.log('Making request to:', `http://localhost:5000/api/students/${profileId}`);
+      console.log('Making request to:', `${config.backendUrl}/api/students/${profileId}`);
       
       try {
-        const response = await axios.get(`http://localhost:5000/api/students/${profileId}`, {
+        const response = await axios.get(`${config.backendUrl}/api/students/${profileId}`, {
           headers: { 
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
@@ -195,7 +196,7 @@ const Profile = () => {
           avatar: response.data.avatar ? 
             (response.data.avatar.startsWith('http') ? 
               response.data.avatar : 
-              `http://localhost:5000/${response.data.avatar}`) 
+              `${config.backendUrl}/${response.data.avatar}`) 
             : '',
           education: response.data.education || [],
           experience: response.data.experience || [],
@@ -892,7 +893,7 @@ const Profile = () => {
       setLoading(true);
       
       // Delete the user account first
-      const userResponse = await axios.delete(`http://localhost:5000/api/users/${user._id}`, {
+      const userResponse = await axios.delete(`${config.backendUrl}/api/users/${user._id}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'

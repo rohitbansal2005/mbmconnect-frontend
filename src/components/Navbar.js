@@ -61,6 +61,7 @@ import { getProfileImageUrl, getBestProfileImage, fallbackImage } from '../utils
 import LeftSidebar from './LeftSidebar';
 import RightSidebar from './RightSidebar';
 import { useNotifications } from '../context/NotificationContext';
+import config from '../config';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -104,7 +105,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 const getAvatarUrl = (avatar) => {
   if (!avatar) return '';
   if (avatar.startsWith('http')) return avatar;
-  return `http://localhost:5000/${avatar.replaceAll('\\', '/')}`;
+  return `${config.backendUrl}/${avatar.replaceAll('\\', '/')}`;
 };
 
 const Navbar = () => {
@@ -178,7 +179,7 @@ const Navbar = () => {
           setLoading(false);
           return;
         }
-        const response = await axios.get('http://localhost:5000/api/users', {
+        const response = await axios.get(`${config.backendUrl}/api/users`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
