@@ -1,0 +1,33 @@
+.help-center {
+    margin-top: 30px;
+    padding: 15px;
+    background-color: #34495e;
+    border-radius: 8px;
+}
+
+.help-center h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #ecf0f1;
+    text-align: center;
+}
+
+.help-center ul {
+    list-style: none;
+    padding: 0;
+}
+
+.help-center ul li {
+    margin-bottom: 10px;
+}
+
+.help-center ul li a {
+    text-decoration: none;
+    color: #1abc9c;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.help-center ul li a:hover {
+    color: #16a085;
+}

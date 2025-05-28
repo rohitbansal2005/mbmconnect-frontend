@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background Circle -->
+    <circle cx="400" cy="300" r="250" fill="#E3F2FD" opacity="0.5"/>
+    
+    <!-- Network Nodes -->
+    <circle cx="400" cy="300" r="20" fill="#1976D2"/>
+    <circle cx="250" cy="200" r="15" fill="#2196F3"/>
+    <circle cx="550" cy="200" r="15" fill="#2196F3"/>
+    <circle cx="250" cy="400" r="15" fill="#2196F3"/>
+    <circle cx="550" cy="400" r="15" fill="#2196F3"/>
+    
+    <!-- Connection Lines -->
+    <line x1="400" y1="300" x2="250" y2="200" stroke="#1976D2" stroke-width="3"/>
+    <line x1="400" y1="300" x2="550" y2="200" stroke="#1976D2" stroke-width="3"/>
+    <line x1="400" y1="300" x2="250" y2="400" stroke="#1976D2" stroke-width="3"/>
+    <line x1="400" y1="300" x2="550" y2="400" stroke="#1976D2" stroke-width="3"/>
+    
+    <!-- Decorative Elements -->
+    <circle cx="200" cy="150" r="10" fill="#90CAF9" opacity="0.5"/>
+    <circle cx="600" cy="150" r="10" fill="#90CAF9" opacity="0.5"/>
+    <circle cx="200" cy="450" r="10" fill="#90CAF9" opacity="0.5"/>
+    <circle cx="600" cy="450" r="10" fill="#90CAF9" opacity="0.5"/>
+    
+    <!-- Chat Bubbles -->
+    <path d="M300 250 Q320 240 340 250 Q360 260 340 270 L320 280 L300 270 Q280 260 300 250" fill="#BBDEFB"/>
+    <path d="M460 250 Q480 240 500 250 Q520 260 500 270 L480 280 L460 270 Q440 260 460 250" fill="#BBDEFB"/>
+    
+    <!-- Share Icon -->
+    <circle cx="400" cy="300" r="40" fill="#E3F2FD"/>
+    <path d="M400 280 L400 320 M380 300 L420 300" stroke="#1976D2" stroke-width="4"/>
+</svg> 
