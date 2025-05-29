@@ -1,0 +1,30 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "build"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/socket.io/(.*)",
+      "dest": "https://mbmconnect-backend.onrender.com/socket.io/$1"
+    },
+    {
+      "src": "/api/(.*)",
+      "dest": "https://mbmconnect-backend.onrender.com/api/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ],
+  "env": {
+    "REACT_APP_API_URL": "https://mbmconnect-backend.onrender.com/api",
+    "REACT_APP_SOCKET_URL": "https://mbmconnect-backend.onrender.com"
+  }
+} 

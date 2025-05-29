@@ -35,24 +35,43 @@ export const AuthProvider = ({ children }) => {
     // Effect to manage the socket connection
     useEffect(() => {
         if (user) {
+            console.log('Initializing socket with URL:', config.socketUrl);
             const socket = io(config.socketUrl, {
                 transports: ['websocket', 'polling'],
                 reconnection: true,
                 reconnectionAttempts: 5,
                 reconnectionDelay: 1000,
-                withCredentials: true
+                withCredentials: true,
+                path: '/socket.io',
+                forceNew: true,
+                timeout: 10000,
+                autoConnect: true
             });
 
             socket.on('connect_error', (error) => {
                 console.log('Socket connection error:', error);
+                // Attempt to reconnect with polling if websocket fails
+                if (socket.io.opts.transports[0] === 'websocket') {
+                    console.log('Switching to polling transport');
+                    socket.io.opts.transports = ['polling', 'websocket'];
+                }
             });
 
             socket.on('connect', () => {
                 console.log('Socket connected successfully');
+                // Emit userLogin event after successful connection
+                if (user._id) {
+                    console.log('Emitting userLogin event for user:', user._id);
+                    socket.emit('userLogin', user._id);
+                }
             });
 
             socket.on('disconnect', (reason) => {
                 console.log('Socket disconnected:', reason);
+                if (reason === 'io server disconnect') {
+                    // Server initiated disconnect, try to reconnect
+                    socket.connect();
+                }
             });
 
             socket.on('reconnect_attempt', (attemptNumber) => {
