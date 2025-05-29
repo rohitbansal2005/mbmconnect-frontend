@@ -6,7 +6,7 @@
       "use": "@vercel/static-build",
       "config": {
         "distDir": "build",
-        "buildCommand": "CI=false npm run build",
+        "buildCommand": "set \"GENERATE_SOURCEMAP=false\" && set \"CI=false\" && set \"NODE_ENV=production\" && react-scripts build",
         "installCommand": "npm install --legacy-peer-deps"
       }
     }
