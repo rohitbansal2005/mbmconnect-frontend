@@ -34,70 +34,43 @@ export const AuthProvider = ({ children }) => {
 
     // Effect to manage the socket connection
     useEffect(() => {
-        let socketInstance = null;
-        
-        const initializeSocket = () => {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                console.log('No token found, skipping socket initialization');
-                return;
-            }
-
-            console.log('Initializing socket connection...');
-            
-            // Disconnect existing socket if any
-            if (socket) {
-                console.log('Disconnecting existing socket...');
-                socket.disconnect();
-            }
-
-            socketInstance = io(process.env.REACT_APP_SOCKET_URL || 'http://localhost:5000', {
+        if (user) {
+            const socket = io(config.socketUrl, {
                 transports: ['websocket', 'polling'],
                 reconnection: true,
                 reconnectionAttempts: 5,
                 reconnectionDelay: 1000,
-                timeout: 10000,
-                auth: {
-                    token
-                }
+                withCredentials: true
             });
 
-            socketInstance.on('connect', () => {
-                console.log('Socket connected');
-                setSocket(socketInstance);
-                // Emit userLogin event with the current user's ID
-                const storedUser = localStorage.getItem('user');
-                const parsedUser = storedUser ? JSON.parse(storedUser) : null;
-                if (parsedUser && parsedUser._id) {
-                    socketInstance.emit('userLogin', parsedUser._id);
-                }
+            socket.on('connect_error', (error) => {
+                console.log('Socket connection error:', error);
             });
 
-            socketInstance.on('connect_error', (error) => {
-                console.error('Socket connection error:', error);
-                if (error.message === 'Authentication failed') {
-                    console.log('Authentication failed, clearing token');
-                    localStorage.removeItem('token');
-                    setUser(null);
-                }
+            socket.on('connect', () => {
+                console.log('Socket connected successfully');
             });
 
-            socketInstance.on('disconnect', (reason) => {
+            socket.on('disconnect', (reason) => {
                 console.log('Socket disconnected:', reason);
-                if (reason === 'io server disconnect') {
-                    // Server initiated disconnect, try to reconnect
-                    socketInstance.connect();
-                }
             });
 
-            socketInstance.on('userData', (data) => {
+            socket.on('reconnect_attempt', (attemptNumber) => {
+                console.log('Socket reconnection attempt:', attemptNumber);
+            });
+
+            socket.on('reconnect_failed', () => {
+                console.log('Socket reconnection failed');
+            });
+
+            socket.on('userData', (data) => {
                 console.log('User data received:', data);
                 if (data.user) {
                     setUser(data.user);
                 }
             });
 
-            socketInstance.on('receiveMessage', (message) => {
+            socket.on('receiveMessage', (message) => {
                 console.log('New message received:', message);
                 setMessages(prevMessages => {
                     const exists = prevMessages.some(m => m._id === message._id);
@@ -106,7 +79,7 @@ export const AuthProvider = ({ children }) => {
                 });
             });
 
-            socketInstance.on('messageUpdated', (message) => {
+            socket.on('messageUpdated', (message) => {
                 console.log('Message updated:', message);
                 setMessages(prevMessages => 
                     prevMessages.map(msg => 
@@ -115,14 +88,14 @@ export const AuthProvider = ({ children }) => {
                 );
             });
 
-            socketInstance.on('messageDeleted', (data) => {
+            socket.on('messageDeleted', (data) => {
                 console.log('Message deleted:', data);
                 setMessages(prevMessages => 
                     prevMessages.filter(msg => msg._id !== data.messageId)
                 );
             });
 
-            socketInstance.on('userStatus', (data) => {
+            socket.on('userStatus', (data) => {
                 console.log('User status update:', data);
                 setOnlineUsers(prev => {
                     const newStatus = { ...prev };
@@ -131,7 +104,7 @@ export const AuthProvider = ({ children }) => {
                 });
             });
 
-            socketInstance.on('userTyping', (data) => {
+            socket.on('userTyping', (data) => {
                 console.log('User typing:', data);
                 setTypingUsers(prev => {
                     const newTyping = { ...prev };
@@ -140,25 +113,27 @@ export const AuthProvider = ({ children }) => {
                 });
             });
 
-            socketInstance.on('onlineUsers', (users) => {
+            socket.on('onlineUsers', (users) => {
                 console.log('Received online users:', users);
                 setOnlineUsers(users);
             });
 
-            socketInstance.on('error', (error) => {
+            socket.on('error', (error) => {
                 console.error('Socket error:', error);
             });
-        };
 
-        initializeSocket();
+            setSocket(socket);
 
-        return () => {
-            if (socketInstance) {
-                console.log('Cleaning up socket connection...');
-                socketInstance.disconnect();
-            }
-        };
-    }, []); // Empty dependency array to run only once on mount
+            return () => {
+                socket.off('connect_error');
+                socket.off('connect');
+                socket.off('disconnect');
+                socket.off('reconnect_attempt');
+                socket.off('reconnect_failed');
+                socket.disconnect();
+            };
+        }
+    }, [user]);
 
     const fetchUserData = async () => {
         try {
