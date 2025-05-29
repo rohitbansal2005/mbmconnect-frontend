@@ -301,7 +301,7 @@ const Navbar = () => {
     try {
       setAcceptingRequestId(notifId);
       await axios.post(
-        `http://localhost:5000/api/follows/accept/${notifId}`,
+        `${config.backendUrl}/api/follows/accept/${notifId}`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );

@@ -41,6 +41,7 @@ import { getProfileImageUrl, getBestProfileImage, fallbackImage } from '../utils
 import ShareDialog from './ShareDialog';
 import ImagePreviewDialog from './ImagePreviewDialog';
 import ReportDialog from './ReportDialog';
+import config from '../config';
 
 const PostImage = styled('img')({
   width: '100%',
@@ -70,7 +71,7 @@ const getMediaUrl = (media) => {
   if (media.startsWith('http')) return media;
   let cleanPath = media.replace(/^[/\\]+/, '').replace(/\\/g, '/');
   cleanPath = cleanPath.replace(/([^:]\/)\/+/, '$1');
-  return `http://localhost:5000/${cleanPath}`;
+  return `${config.backendUrl}/${cleanPath}`;
 };
 
 const PostCard = ({ post, onLike, onComment, onEdit, onReport, onDelete, onSave, savedPosts, showSnackbar, handleShareClick, onImageClick, onReportComment, onPostClick }) => {
@@ -112,7 +113,7 @@ const PostCard = ({ post, onLike, onComment, onEdit, onReport, onDelete, onSave,
       followCheckTimeoutRef.current = setTimeout(async () => {
         try {
           const token = localStorage.getItem('token');
-          const res = await axios.get(`http://localhost:5000/api/follows/check/${post.author._id}`, {
+          const res = await axios.get(`${config.backendUrl}/api/follows/check/${post.author._id}`, {
             headers: { Authorization: `Bearer ${token}` }
           });
           setFollowStatus(res.data.status || (res.data.isFollowing ? 'following' : 'not_following'));
@@ -147,7 +148,7 @@ const PostCard = ({ post, onLike, onComment, onEdit, onReport, onDelete, onSave,
     try {
       const token = localStorage.getItem('token');
       const response = await axios.put(
-        `http://localhost:5000/api/posts/${post._id}/like`,
+        `${config.backendUrl}/api/posts/${post._id}/like`,
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -163,7 +164,7 @@ const PostCard = ({ post, onLike, onComment, onEdit, onReport, onDelete, onSave,
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post(
-        `http://localhost:5000/api/posts/${post._id}/comment`,
+        `${config.backendUrl}/api/posts/${post._id}/comment`,
         { text: commentText },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -179,7 +180,7 @@ const PostCard = ({ post, onLike, onComment, onEdit, onReport, onDelete, onSave,
     try {
       const token = localStorage.getItem('token');
       await axios.delete(
-        `http://localhost:5000/api/posts/${post._id}`,
+        `${config.backendUrl}/api/posts/${post._id}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       if (onDelete) onDelete(post._id);
@@ -224,7 +225,7 @@ const PostCard = ({ post, onLike, onComment, onEdit, onReport, onDelete, onSave,
           setReportTarget(null);
           return;
         }
-        await axios.post(`http://localhost:5000/api/posts/${reportTarget.post._id}/report`, { reason, description }, {
+        await axios.post(`${config.backendUrl}/api/posts/${reportTarget.post._id}/report`, { reason, description }, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (showSnackbar) showSnackbar('Post reported!', 'success');
@@ -235,7 +236,7 @@ const PostCard = ({ post, onLike, onComment, onEdit, onReport, onDelete, onSave,
           setReportTarget(null);
           return;
         }
-        await axios.post(`http://localhost:5000/api/posts/${reportTarget.post._id}/comment/${reportTarget.comment._id}/report`, { reason, description }, {
+        await axios.post(`${config.backendUrl}/api/posts/${reportTarget.post._id}/comment/${reportTarget.comment._id}/report`, { reason, description }, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (showSnackbar) showSnackbar('Comment reported!', 'success');
@@ -289,14 +290,14 @@ const PostCard = ({ post, onLike, onComment, onEdit, onReport, onDelete, onSave,
       const token = localStorage.getItem('token');
       let res;
       if (followStatus === 'not_following') {
-        res = await axios.post(`http://localhost:5000/api/follows/${post.author._id}`, {}, {
+        res = await axios.post(`${config.backendUrl}/api/follows/${post.author._id}`, {}, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setFollowStatus('pending'); // Assuming it sends a follow request
         if (showSnackbar) showSnackbar('Follow request sent!', 'success');
       } else if (followStatus === 'following') {
         // We need a DELETE route or similar for unfollow
-        res = await axios.delete(`http://localhost:5000/api/follows/${post.author._id}`, {
+        res = await axios.delete(`${config.backendUrl}/api/follows/${post.author._id}`, {
            headers: { Authorization: `Bearer ${token}` }
         });
         setFollowStatus('not_following');
@@ -560,7 +561,7 @@ const PostCard = ({ post, onLike, onComment, onEdit, onReport, onDelete, onSave,
                 try {
                   const token = localStorage.getItem('token');
                   await axios.put(
-                    `http://localhost:5000/api/posts/${post._id}/comment/${editCommentId}`,
+                    `${config.backendUrl}/api/posts/${post._id}/comment/${editCommentId}`,
                     { text: editCommentText },
                     { headers: { Authorization: `Bearer ${token}` } }
                   );
@@ -660,7 +661,7 @@ const PostCard = ({ post, onLike, onComment, onEdit, onReport, onDelete, onSave,
                       <MenuItem onClick={async () => {
                         try {
                           const token = localStorage.getItem('token');
-                          await axios.delete(`http://localhost:5000/api/posts/${post._id}/comment/${comment._id}`, {
+                          await axios.delete(`${config.backendUrl}/api/posts/${post._id}/comment/${comment._id}`, {
                             headers: { Authorization: `Bearer ${token}` }
                           });
                           if (onComment) {
@@ -816,7 +817,7 @@ const Feed = ({ posts, onLike, onComment, onDelete, onEdit, onSave, savedPosts, 
           setReportTarget(null);
           return;
         }
-        await axios.post(`http://localhost:5000/api/posts/${reportTarget.post._id}/report`, { reason, description }, {
+        await axios.post(`${config.backendUrl}/api/posts/${reportTarget.post._id}/report`, { reason, description }, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (showSnackbar) showSnackbar('Post reported!', 'success');
@@ -827,7 +828,7 @@ const Feed = ({ posts, onLike, onComment, onDelete, onEdit, onSave, savedPosts, 
           setReportTarget(null);
           return;
         }
-        await axios.post(`http://localhost:5000/api/posts/${reportTarget.post._id}/comment/${reportTarget.comment._id}/report`, { reason, description }, {
+        await axios.post(`${config.backendUrl}/api/posts/${reportTarget.post._id}/comment/${reportTarget.comment._id}/report`, { reason, description }, {
           headers: { Authorization: `Bearer ${token}` }
         });
         if (showSnackbar) showSnackbar('Comment reported!', 'success');

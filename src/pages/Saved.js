@@ -24,6 +24,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { getProfileImageUrl } from '../utils/imageUtils';
 import Feed from '../components/Feed';
 import PageLayout from '../components/PageLayout';
+import config from '../config';
 
 const Saved = () => {
   const { user } = useAuth();
@@ -40,7 +41,7 @@ const Saved = () => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.get(
-        'http://localhost:5000/api/posts/saved',
+        `${config.backendUrl}/api/posts/saved`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setSavedPosts(response.data);
@@ -58,7 +59,7 @@ const Saved = () => {
       if (savedPostIds.includes(postId)) {
         // Unsave post
         await axios.post(
-          `http://localhost:5000/api/posts/${postId}/unsave`,
+          `${config.backendUrl}/api/posts/${postId}/unsave`,
           {},
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -67,7 +68,7 @@ const Saved = () => {
       } else {
         // Save post (should not happen in saved page, but for completeness)
         await axios.post(
-          `http://localhost:5000/api/posts/${postId}/save`,
+          `${config.backendUrl}/api/posts/${postId}/save`,
           {},
           { headers: { Authorization: `Bearer ${token}` } }
         );

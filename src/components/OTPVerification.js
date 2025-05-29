@@ -9,6 +9,7 @@ import {
     CircularProgress
 } from '@mui/material';
 import axios from 'axios';
+import config from '../config';
 
 const OTPVerification = ({ email, onVerificationSuccess, onCancel }) => {
     const [otp, setOtp] = useState('');
@@ -33,7 +34,7 @@ const OTPVerification = ({ email, onVerificationSuccess, onCancel }) => {
         setError('');
         setLoading(true);
         try {
-            const response = await axios.post('http://localhost:5000/api/auth/verify-otp', {
+            const response = await axios.post(`${config.backendUrl}/api/auth/verify-otp`, {
                 email,
                 otp
             });
@@ -53,7 +54,7 @@ const OTPVerification = ({ email, onVerificationSuccess, onCancel }) => {
         setError('');
         setLoading(true);
         try {
-            const response = await axios.post('http://localhost:5000/api/auth/resend-otp', {
+            const response = await axios.post(`${config.backendUrl}/api/auth/resend-otp`, {
                 email
             });
             if (response.data.success) {

@@ -29,6 +29,7 @@ import { useAuth } from '../context/AuthContext';
 import { useTheme as useAppTheme } from '../context/ThemeContext';
 import axios from 'axios';
 import PageLayout from '../components/PageLayout';
+import config from '../config';
 
 const Updates = () => {
   const { user } = useAuth();
@@ -59,7 +60,7 @@ const Updates = () => {
 
   const fetchUpdates = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/events');
+      const res = await axios.get(`${config.backendUrl}/api/events`);
       setUpdates(res.data);
     } catch (error) {
       console.error('Error fetching updates:', error);
@@ -167,7 +168,7 @@ const Updates = () => {
 
       if (editingUpdate) {
         const response = await axios.put(
-          `http://localhost:5000/api/events/${editingUpdate._id}`,
+          `${config.backendUrl}/api/events/${editingUpdate._id}`,
           formDataToSend,
           {
             headers: { 
@@ -179,7 +180,7 @@ const Updates = () => {
         console.log('Update updated:', response.data);
       } else {
         const response = await axios.post(
-          'http://localhost:5000/api/events',
+          `${config.backendUrl}/api/events`,
           formDataToSend,
           {
             headers: { 
@@ -205,7 +206,7 @@ const Updates = () => {
     
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:5000/api/events/${updateId}`, {
+      await axios.delete(`${config.backendUrl}/api/events/${updateId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchUpdates();
@@ -299,7 +300,7 @@ const Updates = () => {
                   }}
                 >
                   <img
-                    src={update.image ? (update.image.startsWith('http') ? update.image : `http://localhost:5000/${update.image}`) : '/broken-image.png'}
+                    src={update.image ? (update.image.startsWith('http') ? update.image : `${config.backendUrl}/${update.image}`) : '/broken-image.png'}
                     alt={update.title}
                     width="300"
                     height="200"

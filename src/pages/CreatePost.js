@@ -9,6 +9,7 @@ import {
   Box,
 } from '@mui/material';
 import axios from 'axios';
+import config from '../config';
 
 const CreatePost = () => {
   const navigate = useNavigate();
@@ -30,7 +31,7 @@ const CreatePost = () => {
         data.append('media', mediaFile);
       }
 
-      await axios.post('http://localhost:5000/api/posts', data, {
+      await axios.post(`${config.backendUrl}/api/posts`, data, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

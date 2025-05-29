@@ -223,7 +223,7 @@ const Profile = () => {
         if (error.response?.status === 404) {
           // Profile doesn't exist, create it
           console.log('Profile not found, creating new profile');
-          const createResponse = await axios.post('http://localhost:5000/api/students', {
+          const createResponse = await axios.post(`${config.backendUrl}/api/students`, {
             user: profileId,
             fullName: user.username,
             rollNumber: `MBM${Date.now()}`,
@@ -361,7 +361,7 @@ const Profile = () => {
         };
 
         const response = await axios.put(
-            `http://localhost:5000/api/students/${profile._id}`,
+            `${config.backendUrl}/api/students/${profile._id}`,
             updateData,
             {
                 headers: {
@@ -514,7 +514,7 @@ const Profile = () => {
     try {
         console.log('Uploading photo for profile:', profile._id);
         const response = await axios.post(
-            `http://localhost:5000/api/students/${profile._id}/photo`,
+            `${config.backendUrl}/api/students/${profile._id}/photo`,
             formData,
             {
                 headers: {
@@ -574,7 +574,7 @@ const Profile = () => {
     // If it's a relative path, construct the full URL
     // Remove any leading slashes to avoid double slashes
     const cleanPath = profile.avatar.replace(/^\/+/, '');
-    return `http://localhost:5000/${cleanPath}`;
+    return `${config.backendUrl}/${cleanPath}`;
   };
 
   const handlePrivacyChange = (field, value) => {
@@ -611,7 +611,7 @@ const Profile = () => {
         console.log('Updating privacy settings:', privacy);
 
         const response = await axios.put(
-            `http://localhost:5000/api/students/${profile._id}`,
+            `${config.backendUrl}/api/students/${profile._id}`,
             { privacy },
             {
                 headers: { 
@@ -716,7 +716,7 @@ const Profile = () => {
     try {
       const updatedEducation = [...formData.education, educationInput];
       await axios.put(
-        `http://localhost:5000/api/students/${profile._id}`,
+        `${config.backendUrl}/api/students/${profile._id}`,
         { education: updatedEducation },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -745,7 +745,7 @@ const Profile = () => {
     try {
       const updatedExperience = [...formData.experience, experienceInput];
       await axios.put(
-        `http://localhost:5000/api/students/${profile._id}`,
+        `${config.backendUrl}/api/students/${profile._id}`,
         { experience: updatedExperience },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -765,7 +765,7 @@ const Profile = () => {
     try {
       const updatedExperience = formData.experience.filter((_, i) => i !== index);
       await axios.put(
-        `http://localhost:5000/api/students/${profile._id}`,
+        `${config.backendUrl}/api/students/${profile._id}`,
         { experience: updatedExperience },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -827,7 +827,7 @@ const Profile = () => {
     }
     try {
       console.log('Fetching posts for user:', userId);
-      const response = await axios.get(`http://localhost:5000/api/posts/user/${userId}`, {
+      const response = await axios.get(`${config.backendUrl}/api/posts/user/${userId}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       console.log('Fetched posts:', response.data);
@@ -852,7 +852,7 @@ const Profile = () => {
     try {
       console.log('Creating post with:', formData);
 
-      const response = await axios.post('http://localhost:5000/api/posts', formData, {
+      const response = await axios.post(`${config.backendUrl}/api/posts`, formData, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
@@ -1021,7 +1021,7 @@ const Profile = () => {
   const handleDeletePost = async (postId) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:5000/api/posts/${postId}`, {
+      await axios.delete(`${config.backendUrl}/api/posts/${postId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -1054,7 +1054,7 @@ const Profile = () => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.put(
-        `http://localhost:5000/api/posts/${editingPost._id}`,
+        `${config.backendUrl}/api/posts/${editingPost._id}`,
         { content: editContent },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -1088,7 +1088,7 @@ const Profile = () => {
     const fetchSavedPosts = async () => {
       if (!user || !token) return;
       try {
-        const response = await axios.get('http://localhost:5000/api/posts/saved', {
+        const response = await axios.get(`${config.backendUrl}/api/posts/saved`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setSavedPosts(response.data.map(post => post._id));
@@ -1105,7 +1105,7 @@ const Profile = () => {
       const token = localStorage.getItem('token');
       if (savedPosts.includes(postId)) {
         // Unsave post
-        await axios.post(`http://localhost:5000/api/posts/${postId}/unsave`, {}, {
+        await axios.post(`${config.backendUrl}/api/posts/${postId}/unsave`, {}, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setSavedPosts(prev => prev.filter(id => id !== postId));
@@ -1116,7 +1116,7 @@ const Profile = () => {
         });
       } else {
         // Save post
-        await axios.post(`http://localhost:5000/api/posts/${postId}/save`, {}, {
+        await axios.post(`${config.backendUrl}/api/posts/${postId}/save`, {}, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setSavedPosts(prev => [...prev, postId]);
@@ -1142,7 +1142,7 @@ const Profile = () => {
     try {
       // Fetch followers
       const followersResponse = await axios.get(
-        `http://localhost:5000/api/follows/followers/${profile.user._id}`,
+        `${config.backendUrl}/api/follows/followers/${profile.user._id}`,
         {
           headers: {
             'Authorization': `Bearer ${token}`
@@ -1153,7 +1153,7 @@ const Profile = () => {
 
       // Fetch following
       const followingResponse = await axios.get(
-        `http://localhost:5000/api/follows/following/${profile.user._id}`,
+        `${config.backendUrl}/api/follows/following/${profile.user._id}`,
         {
           headers: {
             'Authorization': `Bearer ${token}`

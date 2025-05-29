@@ -56,6 +56,7 @@ import { useAuth } from '../context/AuthContext';
 import { getProfileImageUrl, fallbackImage, getBestProfileImage } from '../utils/imageUtils';
 import BackButton from '../components/BackButton';
 import PageLayout from '../components/PageLayout';
+import config from '../config';
 
 const Groups = () => {
   const { groupId } = useParams(); // Get group ID from URL
@@ -130,7 +131,7 @@ const Groups = () => {
         return;
       }
 
-      const res = await axios.get('http://localhost:5000/api/groups', {
+      const res = await axios.get(`${config.backendUrl}/api/groups`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -153,7 +154,7 @@ const Groups = () => {
     try {
       setIsLoadingFriends(true);
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:5000/api/users/friends', {
+      const response = await axios.get(`${config.backendUrl}/api/users/friends`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       setFriends(response.data);
@@ -181,7 +182,7 @@ const Groups = () => {
         return;
     }
 
-    const newSocket = io('http://localhost:5000', {
+    const newSocket = io(config.socketUrl, {
       transports: ['websocket', 'polling'], // Add polling as fallback
       reconnection: true,
       reconnectionAttempts: 5,
@@ -289,7 +290,7 @@ const Groups = () => {
       });
 
       const res = await axios.post(
-        `http://localhost:5000/api/groups/${groupId}/messages`,
+        `${config.backendUrl}/api/groups/${groupId}/messages`,
         { text: newMessage },
         {
           headers: {
@@ -367,7 +368,7 @@ const Groups = () => {
         throw new Error('No authentication token found');
       }
 
-      const res = await axios.get(`http://localhost:5000/api/groups/${groupId}/messages`, {
+      const res = await axios.get(`${config.backendUrl}/api/groups/${groupId}/messages`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -390,7 +391,7 @@ const Groups = () => {
       formData.append('image', file);
 
       const token = localStorage.getItem('token');
-      const res = await axios.post('http://localhost:5000/api/upload', formData, {
+      const res = await axios.post(`${config.backendUrl}/api/upload`, formData, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
@@ -450,7 +451,7 @@ const Groups = () => {
         formData.append('selectedFriends', JSON.stringify(selectedFriends));
       }
 
-      const res = await axios.post('http://localhost:5000/api/groups', formData, {
+      const res = await axios.post(`${config.backendUrl}/api/groups`, formData, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
@@ -490,7 +491,7 @@ const Groups = () => {
 
   const handleLeaveGroup = async () => {
     try {
-      await axios.put(`http://localhost:5000/api/groups/${selectedGroup._id}/leave`);
+      await axios.put(`${config.backendUrl}/api/groups/${selectedGroup._id}/leave`);
       setGroups(groups.filter(g => g._id !== selectedGroup._id));
       handleGroupMenuClose();
     } catch (error) {
@@ -500,7 +501,7 @@ const Groups = () => {
 
   const handleDeleteGroup = async () => {
     try {
-      await axios.delete(`http://localhost:5000/api/groups/${selectedGroup._id}`);
+      await axios.delete(`${config.backendUrl}/api/groups/${selectedGroup._id}`);
       setGroups(groups.filter(g => g._id !== selectedGroup._id));
       handleGroupMenuClose();
     } catch (error) {
@@ -531,7 +532,7 @@ const Groups = () => {
     try {
       const token = localStorage.getItem('token');
       const res = await axios.put(
-        `http://localhost:5000/api/groups/${groupId}/messages/${selectedMessage._id}`,
+        `${config.backendUrl}/api/groups/${groupId}/messages/${selectedMessage._id}`,
         { text: editText },
         {
           headers: {
@@ -568,7 +569,7 @@ const Groups = () => {
     try {
       const token = localStorage.getItem('token');
       await axios.delete(
-        `http://localhost:5000/api/groups/${groupId}/messages/${selectedMessage._id}`,
+        `${config.backendUrl}/api/groups/${groupId}/messages/${selectedMessage._id}`,
         {
           headers: {
             'Authorization': `Bearer ${token}`
@@ -609,7 +610,7 @@ const Groups = () => {
       });
 
       const res = await axios.put(
-        `http://localhost:5000/api/groups/${selectedGroup._id}`,
+        `${config.backendUrl}/api/groups/${selectedGroup._id}`,
         {
           name: editGroupName,
           description: editGroupDescription,
@@ -690,7 +691,7 @@ const Groups = () => {
   const handleJoinGroup = async (groupId) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.put(`http://localhost:5000/api/groups/${groupId}/join`, {}, {
+      await axios.put(`${config.backendUrl}/api/groups/${groupId}/join`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchGroups();
@@ -829,7 +830,7 @@ const Groups = () => {
                         src={
                           (group.adminImage.startsWith('http')
                             ? group.adminImage
-                            : `http://localhost:5000${group.adminImage.startsWith('/') ? '' : '/'}${group.adminImage}`
+                            : `${config.backendUrl}${group.adminImage.startsWith('/') ? '' : '/'}${group.adminImage}`
                           ) + `?t=${Date.now()}`
                         }
                         alt={group.name}
@@ -919,7 +920,7 @@ const Groups = () => {
                       src={
                         (currentGroup.adminImage.startsWith('http')
                           ? currentGroup.adminImage
-                          : `http://localhost:5000${currentGroup.adminImage.startsWith('/') ? '' : '/'}${currentGroup.adminImage}`
+                          : `${config.backendUrl}${currentGroup.adminImage.startsWith('/') ? '' : '/'}${currentGroup.adminImage}`
                         ) + `?t=${Date.now()}`
                       }
                       alt={currentGroup.name}

@@ -31,6 +31,7 @@ import BlockIcon from '@mui/icons-material/Block';
 import PersonOffIcon from '@mui/icons-material/PersonOff';
 import PageLayout from '../components/PageLayout';
 import { Link as RouterLink } from 'react-router-dom';
+import config from '../config';
 
 const Settings = () => {
   const { user, logout, token } = useAuth();
@@ -65,7 +66,7 @@ const Settings = () => {
 
   const fetchSettings = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/settings', {
+      const response = await axios.get(`${config.backendUrl}/api/settings`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       console.log('Fetched settings from backend:', response.data);
@@ -84,7 +85,7 @@ const Settings = () => {
   const fetchBlockedUsers = async () => {
     try {
       const response = await axios.get(
-        'http://localhost:5000/api/users/blocked',
+        `${config.backendUrl}/api/users/blocked`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       console.log('Fetched blocked users:', response.data);
@@ -106,7 +107,7 @@ const Settings = () => {
       // Optimistically update UI
       setSettings(newSettings);
       
-      await axios.put('http://localhost:5000/api/settings', newSettings, {
+      await axios.put(`${config.backendUrl}/api/settings`, newSettings, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       
@@ -132,7 +133,7 @@ const Settings = () => {
       // Optimistically update UI
       toggleTheme();
       
-      await axios.put('http://localhost:5000/api/settings', { theme: newTheme }, {
+      await axios.put(`${config.backendUrl}/api/settings`, { theme: newTheme }, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       
@@ -149,7 +150,7 @@ const Settings = () => {
 
   const handleUnblockUser = async (userId) => {
     try {
-      await axios.post(`http://localhost:5000/api/users/unblock/${userId}`, {}, {
+      await axios.post(`${config.backendUrl}/api/users/unblock/${userId}`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       // Update the blocked users list by filtering out the unblocked user
@@ -169,7 +170,7 @@ const Settings = () => {
     }
     try {
       setLoading(true);
-      await axios.delete('http://localhost:5000/api/users/me', {
+      await axios.delete(`${config.backendUrl}/api/users/me`, {
         headers: { Authorization: `Bearer ${token}` },
         data: { reason, password: deletePassword }
       });

@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { getProfileImageUrl, fallbackImage } from '../utils/imageUtils';
 import { Search as SearchIcon, Clear as ClearIcon } from '@mui/icons-material';
+import config from '../config';
 
 const NavbarUserSearch = ({
   query,
@@ -34,7 +35,7 @@ const NavbarUserSearch = ({
     setShowResults(true);
     try {
       console.log('Searching with token:', token ? 'Token exists' : 'No token');
-      const res = await axios.get(`http://localhost:5000/api/users/search?query=${encodeURIComponent(value)}`, {
+      const res = await axios.get(`${config.backendUrl}/api/users/search?query=${encodeURIComponent(value)}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         }

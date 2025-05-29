@@ -22,6 +22,7 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import axios from 'axios';
 import PageLayout from '../components/PageLayout';
 import { getBestProfileImage, fallbackImage } from '../utils/imageUtils';
+import config from '../config';
 
 const Messages = () => {
     console.log('Messages component rendered');
@@ -46,7 +47,7 @@ const Messages = () => {
 
         const fetchRecipient = async () => {
             try {
-                const response = await axios.get(`http://localhost:5000/api/users/${userId}`, {
+                const response = await axios.get(`${config.backendUrl}/api/users/${userId}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 setRecipient(response.data);
@@ -58,7 +59,7 @@ const Messages = () => {
 
         const fetchMessages = async () => {
             try {
-                const response = await axios.get(`http://localhost:5000/api/messages/${userId}`, {
+                const response = await axios.get(`${config.backendUrl}/api/messages/${userId}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
                 setMessages(response.data);
@@ -88,7 +89,7 @@ const Messages = () => {
 
     const fetchAllMessages = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/messages', {
+            const response = await axios.get(`${config.backendUrl}/api/messages`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
             setMessages(response.data);

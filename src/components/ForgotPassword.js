@@ -13,6 +13,7 @@ import {
     LinearProgress
 } from '@mui/material';
 import axios from 'axios';
+import config from '../config';
 
 const ForgotPassword = ({ onClose }) => {
     const [activeStep, setActiveStep] = useState(0);
@@ -66,7 +67,7 @@ const ForgotPassword = ({ onClose }) => {
         setLoading(true);
         try {
             console.log('Sending forgot password OTP request for email:', email);
-            const response = await axios.post('http://localhost:5000/api/auth/forgot-password', { email });
+            const response = await axios.post(`${config.backendUrl}/api/auth/forgot-password`, { email });
             console.log('Forgot password OTP response:', response.data);
             if (response.data.success) {
                 setActiveStep(1);
@@ -85,7 +86,7 @@ const ForgotPassword = ({ onClose }) => {
         setError('');
         setLoading(true);
         try {
-            const response = await axios.post('http://localhost:5000/api/auth/verify-reset-otp', {
+            const response = await axios.post(`${config.backendUrl}/api/auth/verify-reset-otp`, {
                 email,
                 otp
             });
@@ -116,7 +117,7 @@ const ForgotPassword = ({ onClose }) => {
 
         setLoading(true);
         try {
-            const response = await axios.post('http://localhost:5000/api/auth/reset-password', {
+            const response = await axios.post(`${config.backendUrl}/api/auth/reset-password`, {
                 email,
                 otp,
                 newPassword
@@ -137,7 +138,7 @@ const ForgotPassword = ({ onClose }) => {
         setError('');
         setLoading(true);
         try {
-            const response = await axios.post('http://localhost:5000/api/auth/resend-reset-otp', { email });
+            const response = await axios.post(`${config.backendUrl}/api/auth/resend-reset-otp`, { email });
             if (response.data.success) {
                 setError('');
             } else {

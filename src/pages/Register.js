@@ -13,6 +13,7 @@ import {
 } from '@mui/material';
 import OTPVerification from '../components/OTPVerification';
 import axios from 'axios';
+import config from '../config';
 
 const Register = () => {
     const [username, setUsername] = useState('');
@@ -82,7 +83,7 @@ const Register = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:5000/api/auth/send-otp', { email });
+            const response = await axios.post(`${config.backendUrl}/api/auth/send-otp`, { email });
             if (response.data.success) {
                 setShowOTP(true);
             } else {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import config from '../config';
 // Payment-based verification temporarily disabled. To re-enable, restore VerificationPayment import and related code.
 
 const ENABLE_VERIFICATION_PAYMENT = false; // Set to true to re-enable in future
@@ -15,7 +16,7 @@ const UserProfile = ({ user, currentUser }) => {
             try {
                 if (!user || !currentUser || user._id === currentUser._id) return;
                 // You may need to pass token if required by backend
-                const res = await axios.get('http://localhost:5000/api/users/blocked');
+                const res = await axios.get(`${config.backendUrl}/api/users/blocked`);
                 setIsBlocked(res.data.some(u => u._id === user._id));
             } catch (err) {
                 // Optionally handle error
@@ -26,9 +27,9 @@ const UserProfile = ({ user, currentUser }) => {
 
     const handleBlock = async () => {
         try {
-            await axios.post(`http://localhost:5000/api/users/block/${user._id}`);
+            await axios.post(`${config.backendUrl}/api/users/block/${user._id}`);
             // Refresh blocked users list after blocking
-            const res = await axios.get('http://localhost:5000/api/users/blocked');
+            const res = await axios.get(`${config.backendUrl}/api/users/blocked`);
             setIsBlocked(res.data.some(u => u._id === user._id));
             toast.success('User blocked successfully');
         } catch (error) {
@@ -38,9 +39,9 @@ const UserProfile = ({ user, currentUser }) => {
 
     const handleUnblock = async () => {
         try {
-            await axios.post(`http://localhost:5000/api/users/unblock/${user._id}`);
+            await axios.post(`${config.backendUrl}/api/users/unblock/${user._id}`);
             // Refresh blocked users list after unblocking
-            const res = await axios.get('http://localhost:5000/api/users/blocked');
+            const res = await axios.get(`${config.backendUrl}/api/users/blocked`);
             setIsBlocked(res.data.some(u => u._id === user._id));
             toast.success('User unblocked successfully');
         } catch (error) {

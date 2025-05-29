@@ -4,6 +4,7 @@ import {
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import axios from 'axios';
+import config from '../config';
 
 const categories = [
   { id: 1, name: 'Account', icon: '👤' },
@@ -23,7 +24,7 @@ const HelpCenter = () => {
   const [formError, setFormError] = useState('');
 
   useEffect(() => {
-    axios.get('http://localhost:5000/api/help-center/faqs')
+    axios.get(`${config.backendUrl}/api/help-center/faqs`)
       .then(res => {
         setFaqs(res.data);
         setLoading(false);
@@ -48,7 +49,7 @@ const HelpCenter = () => {
     setFormSuccess('');
     setFormError('');
     try {
-      const res = await axios.post('http://localhost:5000/api/help-center/message', form);
+      const res = await axios.post(`${config.backendUrl}/api/help-center/message`, form);
       setFormSuccess(res.data.msg);
       setForm({ name: '', email: '', message: '' });
     } catch (err) {

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { Box, Typography, CircularProgress } from '@mui/material';
+import config from '../config';
 
 const PostDetail = () => {
   const { id } = useParams();
@@ -11,7 +12,7 @@ const PostDetail = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/posts/${id}`);
+        const res = await axios.get(`${config.backendUrl}/api/posts/${id}`);
         setPost(res.data);
       } catch (err) {
         setPost(null);
@@ -29,14 +30,14 @@ const PostDetail = () => {
       <Typography variant="h5" sx={{ mb: 2 }}>{post.content}</Typography>
       {post.mediaType === 'image' && post.media && (
         <img
-          src={`http://localhost:5000/${post.media.replace(/^[/\\]+/, '').replace(/\\/g, '/')}`}
+          src={`${config.backendUrl}/${post.media.replace(/^[/\\]+/, '').replace(/\\/g, '/')}`}
           alt="post"
           style={{ width: '100%', borderRadius: 8, marginBottom: 16 }}
         />
       )}
       {post.mediaType === 'video' && post.media && (
         <video
-          src={`http://localhost:5000/${post.media.replace(/^[/\\]+/, '').replace(/\\/g, '/')}`}
+          src={`${config.backendUrl}/${post.media.replace(/^[/\\]+/, '').replace(/\\/g, '/')}`}
           controls
           style={{ width: '100%', borderRadius: 8, marginBottom: 16 }}
         />
