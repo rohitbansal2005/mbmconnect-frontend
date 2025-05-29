@@ -5,18 +5,32 @@
       "src": "package.json",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "build"
+        "distDir": "build",
+        "buildCommand": "npm run build"
       }
     }
   ],
   "routes": [
     {
       "src": "/socket.io/(.*)",
-      "dest": "https://mbmconnect-backend.onrender.com/socket.io/$1"
+      "dest": "https://mbmconnect-backend.onrender.com/socket.io/$1",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "X-Requested-With, Content-Type, Accept"
+      }
     },
     {
       "src": "/api/(.*)",
-      "dest": "https://mbmconnect-backend.onrender.com/api/$1"
+      "dest": "https://mbmconnect-backend.onrender.com/api/$1",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "X-Requested-With, Content-Type, Accept"
+      }
+    },
+    {
+      "handle": "filesystem"
     },
     {
       "src": "/(.*)",
