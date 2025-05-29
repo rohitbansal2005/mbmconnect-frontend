@@ -1,7 +1,13 @@
+const isDevelopment = process.env.NODE_ENV === 'development';
+
 const config = {
-  backendUrl: process.env.REACT_APP_API_URL || 'http://localhost:5000/api',
-  socketUrl: process.env.REACT_APP_SOCKET_URL || 'http://localhost:5000',
-  isDevelopment: process.env.NODE_ENV === 'development'
+    backendUrl: isDevelopment 
+        ? 'http://localhost:5000/api'
+        : 'https://mbmconnect-backend.onrender.com/api',
+    socketUrl: isDevelopment 
+        ? 'http://localhost:5000'
+        : 'https://mbmconnect-backend.onrender.com',
+    isDevelopment
 };
 
 export default config; 
